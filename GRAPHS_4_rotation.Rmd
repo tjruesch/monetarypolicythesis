@@ -1,0 +1,114 @@
+---
+title: <center>FAVAR Rotated IRF's</center>
+author: <center>Tom Jordi Ruesch</center>
+subtitle: <center>Figure 7 and Additional Results</center>
+output: 
+  html_document:
+    theme: flatly
+    code_folding: hide
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+<p style="margin-bottom:2cm;"></p>
+
+```{r, include = FALSE}
+rm(list = ls())
+source("preamble_BT.R")
+load("A_adjdata.Rdata")
+```
+
+```{r, include = FALSE, message=FALSE, warning=FALSE}
+Rt <- XR[,167];Rt <- (Rt-mean(Rt))/sd(Rt)
+X <- XR[,-c(167,168)]
+
+
+Xslow <- X[,which(slow == 1)]
+Xfast <- X[,which(slow == 0)]
+
+
+IRF.plots2 <- function(name, n, title, slow = TRUE, growth = TRUE){
+  IRF <- function(name, slow = slow, growth = growth){
+    
+    r.loading <- function(L,n) {
+      L%*%randortho(n)
+    }
+    
+    L_s2 <- (eigen(cov(Xslow))$vectors[,1:2])
+    L_s4 <- (eigen(cov(Xslow))$vectors[,1:4])
+    L_f2 <- (eigen(cov(Xfast))$vectors[,1:2])
+    
+    L_s2 <- r.loading(L_s2,2)
+    L_s4 <- r.loading(L_s4,4)
+    L_f2 <- r.loading(L_f2,2)
+    
+    F_s2 <- Xslow%*%L_s2
+    F_s4 <- Xslow%*%L_s4
+    
+    F_f2 <- Xfast%*%L_f2
+    F_f2 <- F_f2-Rt%*%t(lm(F_f2 ~ F_s2 + Rt)$coefficients[4,])
+    
+    # model estimation
+    Yt <- cbind(F_s4,Rt,F_f2)
+    p = 13
+    var <- VAR(Yt, p = p)
+    
+    amat <- matrix(c(NA,0,0,0,0,0,0, NA,NA,0,0,0,0,0, NA,NA,NA,0,0,0,0, NA,NA,NA,NA,0,0,0,
+                     NA,NA,NA,NA,1,0,0, NA,NA,NA,NA,NA,NA,0, NA,NA,NA,NA,NA,NA,NA), 7,7, byrow=T)
+    svar <- SVAR(var, estmethod = "direct", Amat = amat)
+    irf <- irf(svar,impulse="Rt",n.ahead = 48, ortho = F, boot = F)
+    irfc <- irf(svar,impulse="Rt",n.ahead = 48, ortho = F, cumulative = T, boot = F)
+    
+    if (slow == TRUE & growth == TRUE){
+      IRFs <- irf$irf$Rt[,1:4]%*%t(L_s4)
+      colnames(IRFs) = colnames(Xslow)
+    } else if (slow == TRUE){
+      IRFs <- irfc$irf$Rt[,1:4]%*%t(L_s4)
+      colnames(IRFs) = colnames(Xslow)
+    } 
+    
+    x <- which(colnames(Xslow)==name)
+    
+    return(cffilter(IRFs[,x],root = T)$trend)
+  }
+  
+  hc <- highchart()%>%
+    hc_title(text = title, style = list(fontSize = "30px")) %>%
+    hc_yAxis(plotLines = list(
+      list(color = "#000000",
+           dashStyle = "DashDot",
+           width = 2,
+           value = 0)),
+      labels = list(style = list(fontSize = "18px"))) %>%
+    hc_xAxis(labels=list(style = list(fontSize = "18px"))) %>%
+    hc_legend(enabled = FALSE, itemStyle = list(fontSize = "20px")) %>%
+    hc_size(width = 600, height = 900) %>%
+    hc_exporting(enabled = TRUE)
+    
+  colors = viridis::magma(n)
+  
+  for (i in 1:n){
+    hc <- hc %>% hc_add_series(IRF(name, slow = slow, growth = growth), color = colors[i],  marker = F)
+  }
+  hc
+}
+
+```
+
+# Rotated IRF's (Figure 7)
+
+<br>
+
+In this case the source code can be manipulated directly in this `.Rmd` file. Click on `Show All Code` in the upper right corner.
+
+Note that the graphs might look slightly different due to the random rotations.
+
+<br>
+
+```{r}
+hw_grid(IRF.plots2("IPGENERAL", 49, "Industrial Production Growth"),
+        IRF.plots2("BDUUFA01F", 49, "Consumer Price Index Growth"))
+IRF.plots2("BDUNPTOTP", 49, "Unemployment Level Growth")
+```

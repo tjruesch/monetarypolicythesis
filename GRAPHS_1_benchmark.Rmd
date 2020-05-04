@@ -1,0 +1,51 @@
+---
+title: <center>Benchmark IRF's</center>
+subtitle: <center>Figures 2 and 5 plus Additonal Graphs</center>
+author: <center>Tom Jordi Ruesch</center>
+output: 
+  html_document:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+<p style="margin-bottom:2cm;"></p>
+
+```{r, include = FALSE}
+rm(list = ls())
+source("preamble_BT.R")
+load("A_benchmark_graphs.Rdata")
+```
+
+# MRO interest rate (Figure 2)
+
+<br>
+
+```{r}
+hw_grid(graph.Rt,graph.CPI,graph.IP)
+```
+
+# M1 (Additional)
+
+<br>
+
+```{r}
+hw_grid(graph.Rt2,graph.CPI2,graph.IP2)
+```
+
+# APP (Additional)
+
+<br>
+
+```{r}
+hw_grid(graph.Rt3,graph.CPI3,graph.IP3)
+```
+
+# Comparison (Figure 5)
+
+<br>
+
+```{r}
+hw_grid(R_comp,IP_comp,CPI_comp)
+```

@@ -1,0 +1,49 @@
+---
+title: <center>FAVAR IRF's M1</center>
+author: <center>Tom Jordi Ruesch</center>
+subtitle: <center>Figure 6 and Additional Results</center>
+output: 
+  html_document:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+<p style="margin-bottom:2cm;"></p>
+
+```{r, include = FALSE}
+rm(list = ls())
+source("preamble_BT.R")
+load("A_IRF_graphs_M1.Rdata")
+```
+
+Note: to get the unsmoothed version of the IRFs, please go to `CODE_4_FAVAR_graphs.R`, set `smooth = FALSE` and run `CODE_4_FAVAR_graphs.R` and subsequently this file again.
+
+# Main Results (Figure 6)
+
+<br>
+
+The graphs reported in the paper:
+
+<br>
+
+```{r}
+hw_grid(Rt_42p,IP_42p,CPI_42p)
+hw_grid(UNL_42p,NLB_42p,GDP_42p)
+hw_grid(GSP_42p,CSP_42p,ZES_42p)
+hw_grid(ToT_42p,USD_42p,DAX_42p)
+```
+
+<br>
+
+# Additional Results
+
+<br>
+
+```{r}
+hw_grid(DIN_42p,EXP_42p,FOB_42p)
+hw_grid(GDF_42p,IMP_42p,JPY_42p)
+hw_grid(LTF_42p,SAV_42p,STF_42p)
+hw_grid(ZLI_42p)
+```

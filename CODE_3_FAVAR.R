@@ -12,70 +12,70 @@ for (i in 1:2) {
 
   #### get policy instruments and data ####
 
-  Rt <- XR[,167];Rt <- (Rt-mean(Rt))/sd(Rt)
-  M1 <- window(M1, start = start(Rt),end = end(Rt));M1 <- (M1-mean(M1))/sd(M1)
-  APP <- (APP - mean(APP))/sd(APP)
+  Rt <- XR[, 167];Rt <- (Rt - mean(Rt)) / sd(Rt)
+  M1 <- window(M1, start = start(Rt), end = end(Rt)); M1 <- (M1 - mean(M1)) / sd(M1)
+  APP <- (APP - mean(APP)) / sd(APP)
 
-  X <- XR[, -c(167,168)]
+  X <- XR[, -c(167, 168)]
 
   # Second Time Run:
   if (run == 2) Rt <- -M1
 
   # Third Time Run:
-  if (run == 3){
+  if (run == 3) {
     Rt <- APP
     X <- window(X, start = start(Rt), end = end(Rt), freq = 12)
   }
 
-  Xslow <- X[,which(slow == 1)]
-  Xfast <- X[,which(slow == 0)]
+  Xslow <- X[, which(slow == 1)]
+  Xfast <- X[, which(slow == 0)]
 
   #### Slow Factors ####
   # 1 to 5 Factors
   t <- dim(Xslow)[1]; n <- dim(Xslow)[2]
   # 1
-  L_s1 <- (eigen(cov(Xslow))$vectors[,1])#/sqrt(n)
-  F_s1 <- Xslow%*%L_s1
+  L_s1 <- (eigen(cov(Xslow))$vectors[, 1])#/sqrt(n)
+  F_s1 <- Xslow %*% L_s1
   # 2
-  L_s2 <- (eigen(cov(Xslow))$vectors[,1:2])#/sqrt(n)
-  F_s2 <- Xslow%*%L_s2
+  L_s2 <- (eigen(cov(Xslow))$vectors[, 1:2])#/sqrt(n)
+  F_s2 <- Xslow %*% L_s2
   # 3
-  L_s3 <- (eigen(cov(Xslow))$vectors[,1:3])#/sqrt(n)
-  F_s3 <- Xslow%*%L_s3
+  L_s3 <- (eigen(cov(Xslow))$vectors[, 1:3])#/sqrt(n)
+  F_s3 <- Xslow %*% L_s3
   # 4
-  L_s4 <- (eigen(cov(Xslow))$vectors[,1:4])#/sqrt(n)
-  F_s4 <- Xslow%*%L_s4
+  L_s4 <- (eigen(cov(Xslow))$vectors[, 1:4])#/sqrt(n)
+  F_s4 <- Xslow %*% L_s4
   # 5
-  L_s5 <- (eigen(cov(Xslow))$vectors[,1:5])#/sqrt(n)
-  F_s5 <- Xslow%*%L_s5
+  L_s5 <- (eigen(cov(Xslow))$vectors[, 1:5])#/sqrt(n)
+  F_s5 <- Xslow %*% L_s5
 
   #### Fast Factors ####
   # 1 to 5 Factors
   t <- dim(Xfast)[1]; n <- dim(Xfast)[2]
   # 1
-  L_f1 <- (eigen(cov(Xfast))$vectors[,1])#/sqrt(n)
-  F_f1 <- Xfast%*%L_f1
-  F_f1 = F_f1-lm(F_f1 ~ F_s1 + Rt)$coefficients[3]*Rt
+  L_f1 <- (eigen(cov(Xfast))$vectors[, 1])#/sqrt(n)
+  F_f1 <- Xfast %*% L_f1
+  F_f1 <- F_f1 - lm(F_f1 ~ F_s1 + Rt)$coefficients[3] * Rt
 
   # 2
-  L_f2 <- (eigen(cov(Xfast))$vectors[,1:2])#/sqrt(n)
-  F_f2 <- Xfast%*%L_f2
-  F_f2 = F_f2-Rt%*%t(lm(F_f2 ~ F_s2 + Rt)$coefficients[4,])
+  L_f2 <- (eigen(cov(Xfast))$vectors[, 1:2])#/sqrt(n)
+  F_f2 <- Xfast %*% L_f2
+  F_f2 <- F_f2 - Rt %*% t(lm(F_f2 ~ F_s2 + Rt)$coefficients[4, ])
 
   # 3
   L_f3 <- (eigen(cov(Xfast))$vectors[,1:3])#/sqrt(n)
   F_f3 <- Xfast%*%L_f3
-  F_f3 = F_f3-Rt%*%t(lm(F_f3 ~ F_s3 + Rt)$coefficients[5,])
+  F_f3 <- F_f3-Rt%*%t(lm(F_f3 ~ F_s3 + Rt)$coefficients[5,])
 
   # 4
   L_f4 <- (eigen(cov(Xfast))$vectors[,1:4])#/sqrt(n)
   F_f4 <- Xfast%*%L_f4
-  F_f4 = F_f4-Rt%*%t(lm(F_f4 ~ F_s4 + Rt)$coefficients[6,])
+  F_f4 <- F_f4-Rt%*%t(lm(F_f4 ~ F_s4 + Rt)$coefficients[6,])
 
   # 5
   L_f5 <- (eigen(cov(Xfast))$vectors[,1:5])#/sqrt(n)
   F_f5 <- Xfast%*%L_f5
-  F_f5 = F_f5-Rt%*%t(lm(F_f5 ~ F_s5 + Rt)$coefficients[7,])
+  F_f5 <- F_f5-Rt%*%t(lm(F_f5 ~ F_s5 + Rt)$coefficients[7,])
 
   #### Estimated number of factors ####
   # Estimated Factors Bai Ng
@@ -101,7 +101,7 @@ for (i in 1:2) {
     var.11 <- VAR(Yt, type = "none", p = p)
     var.11$p
 
-    amat <- matrix(c(NA,0,0,NA,1,0,NA,NA,NA), 3,3, byrow=T)
+    amat <- matrix(c(NA, 0, 0, NA, 1, 0, NA, NA, NA), 3,3, byrow=T)
     svar.11 <- SVAR(var.11, estmethod = "direct", Amat = amat)
     irf.11 <- irf(svar.11,impulse="Rt",n.ahead = 48, ortho = F, runs = 50)
     irfc.11 <- irf(svar.11,impulse="Rt",n.ahead = 48, ortho = F, cumulative = T, runs = 50)
@@ -110,22 +110,22 @@ for (i in 1:2) {
     months <- 0:48
 
     # IRF Fslow
-    lower <- irf.11$Lower$Rt[,1]
-    upper <- irf.11$Upper$Rt[,1]
-    irf <- irf.11$irf$Rt[,1]
-    irf.11slow1 <- data.frame(months,lower,irf,upper)
+    lower <- irf.11$Lower$Rt[, 1]
+    upper <- irf.11$Upper$Rt[, 1]
+    irf <- irf.11$irf$Rt[, 1]
+    irf.11slow1 <- data.frame(months, lower, irf, upper)
 
     # IRF Rt
-    lower <- irf.11$Lower$Rt[,2]
-    upper <- irf.11$Upper$Rt[,2]
-    irf <- irf.11$irf$Rt[,2]
-    irf.11Rt <- data.frame(months,lower,irf,upper)
+    lower <- irf.11$Lower$Rt[, 2]
+    upper <- irf.11$Upper$Rt[, 2]
+    irf <- irf.11$irf$Rt[, 2]
+    irf.11Rt <- data.frame(months, lower, irf, upper)
 
     # IRF Ffast
-    lower <- irf.11$Lower$Rt[,3]
-    upper <- irf.11$Upper$Rt[,3]
-    irf <- irf.11$irf$Rt[,3]
-    irf.11fast1 <- data.frame(months,lower,irf,upper)
+    lower <- irf.11$Lower$Rt[, 3]
+    upper <- irf.11$Upper$Rt[, 3]
+    irf <- irf.11$irf$Rt[, 3]
+    irf.11fast1 <- data.frame(months, lower, irf, upper)
 
     # Graphs
     graph.11slow1 <- irf.graph.d(irf.11slow1, name = "Slow Factor", level = "95%")
@@ -137,49 +137,59 @@ for (i in 1:2) {
     var.22 <- VAR(Yt, type = "none", p = 13)
     var.22$p
 
-    amat <- matrix(c(NA,0,0,0,0, NA,NA,0,0,0, NA,NA,1,0,0, NA,NA,NA,NA,0, NA,NA,NA,NA,NA), 5,5, byrow=T)
+    amat <- matrix(c(NA, 0, 0, 0, 0,
+                     NA, NA, 0, 0, 0,
+                     NA, NA, 1, 0, 0,
+                     NA, NA, NA, NA, 0,
+                     NA, NA, NA, NA, NA),
+                     5, 5, byrow=T)
     svar.22 <- SVAR(var.22, estmethod = "direct", Amat = amat)
-    irf.22 <- irf(svar.22,impulse="Rt",n.ahead = 48, ortho = F, runs = 50)
-    irfc.22 <- irf(svar.22,impulse="Rt",n.ahead = 48, ortho = F, cumulative = T, runs = 50)
+    irf.22 <- irf(svar.22, impulse="Rt", n.ahead = 48, ortho = F, runs = 50)
+    irfc.22 <- irf(svar.22, impulse="Rt", n.ahead = 48, ortho = F, cumulative = T, runs = 50)
 
     # IRF Fslow
-    lower <- irf.22$Lower$Rt[,1]
-    upper <- irf.22$Upper$Rt[,1]
-    irf <- irf.22$irf$Rt[,1]
-    irf.22slow1 <- data.frame(months,lower,irf,upper)
+    lower <- irf.22$Lower$Rt[, 1]
+    upper <- irf.22$Upper$Rt[, 1]
+    irf <- irf.22$irf$Rt[, 1]
+    irf.22slow1 <- data.frame(months, lower, irf, upper)
 
-    lower <- irf.22$Lower$Rt[,2]
-    upper <- irf.22$Upper$Rt[,2]
-    irf <- irf.22$irf$Rt[,2]
-    irf.22slow2 <- data.frame(months,lower,irf,upper)
+    lower <- irf.22$Lower$Rt[, 2]
+    upper <- irf.22$Upper$Rt[, 2]
+    irf <- irf.22$irf$Rt[, 2]
+    irf.22slow2 <- data.frame(months, lower, irf, upper)
 
     # IRF Rt
-    lower <- irf.22$Lower$Rt[,3]
-    upper <- irf.22$Upper$Rt[,3]
-    irf <- irf.22$irf$Rt[,3]
-    irf.22Rt <- data.frame(months,lower,irf,upper)
+    lower <- irf.22$Lower$Rt[, 3]
+    upper <- irf.22$Upper$Rt[, 3]
+    irf <- irf.22$irf$Rt[, 3]
+    irf.22Rt <- data.frame(months, lower, irf, upper)
 
     # IRF Ffast
-    lower <- irf.22$Lower$Rt[,4]
-    upper <- irf.22$Upper$Rt[,4]
-    irf <- irf.22$irf$Rt[,4]
-    irf.22fast1 <- data.frame(months,lower,irf,upper)
+    lower <- irf.22$Lower$Rt[, 4]
+    upper <- irf.22$Upper$Rt[, 4]
+    irf <- irf.22$irf$Rt[, 4]
+    irf.22fast1 <- data.frame(months, lower, irf, upper)
 
-    lower <- irf.22$Lower$Rt[,5]
-    upper <- irf.22$Upper$Rt[,5]
-    irf <- irf.22$irf$Rt[,5]
-    irf.22fast2 <- data.frame(months,lower,irf,upper)
+    lower <- irf.22$Lower$Rt[, 5]
+    upper <- irf.22$Upper$Rt[, 5]
+    irf <- irf.22$irf$Rt[, 5]
+    irf.22fast2 <- data.frame(months, lower, irf, upper)
 
     # 3 3 ####
-    Yt <- cbind(F_s3,Rt,F_f3)
+    Yt <- cbind(F_s3, Rt, F_f3)
     var.33 <- VAR(Yt, type = "none", p = 13)
     var.33$p
 
-    amat <- matrix(c(NA,0,0,0,0,0,0, NA,NA,0,0,0,0,0, NA,NA,NA,0,0,0,0, NA,NA,NA,1,0,0,0,
-                     NA,NA,NA,NA,NA,0,0, NA,NA,NA,NA,NA,NA,0, NA,NA,NA,NA,NA,NA,NA), 7,7, byrow=T)
+    amat <- matrix(c(NA, 0, 0, 0, 0, 0, 0,
+                     NA, NA, 0, 0, 0, 0, 0,
+                     NA, NA, NA, 0, 0, 0, 0,
+                     NA, NA, NA, 1, 0, 0, 0,
+                     NA, NA, NA, NA, NA, 0, 0,
+                     NA, NA, NA, NA, NA, NA, 0,
+                     NA, NA, NA, NA, NA, NA, NA), 7, 7, byrow = T)
     svar.33 <- SVAR(var.33, estmethod = "direct", Amat = amat)
-    irf.33 <- irf(svar.33,impulse="Rt",n.ahead = 48, ortho = F, runs = 50)
-    irfc.33 <- irf(svar.33,impulse="Rt",n.ahead = 48, ortho = F, cumulative = T, runs = 500)
+    irf.33 <- irf(svar.33, impulse = "Rt", n.ahead = 48, ortho = F, runs = 50)
+    irfc.33 <- irf(svar.33, impulse = "Rt", n.ahead = 48, ortho = F, cumulative = T, runs = 500)
 
     # IRF Fslow
     lower <- irf.33$Lower$Rt[,1]

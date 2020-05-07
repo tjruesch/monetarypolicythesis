@@ -12,9 +12,9 @@ for (i in 1:2){
   
   #### get policy instruments and data ####
   
-  Rt <- XR[,167];Rt <- (Rt-mean(Rt))/sd(Rt)
-  M1 <- window(M1, start = start(Rt),end = end(Rt));M1 <- (M1-mean(M1))/sd(M1)
-  APP <- (APP-mean(APP))/sd(APP)
+  Rt <- XR[,167];Rt <- (Rt - mean(Rt))/sd(Rt)
+  M1 <- window(M1, start = start(Rt),end = end(Rt));M1 <- (M1 - mean(M1))/sd(M1)
+  APP <- (APP - mean(APP))/sd(APP)
   
   X <- XR[,-c(167,168)]
   
@@ -33,25 +33,31 @@ for (i in 1:2){
   #### Slow Factors ####
   # 1 to 5 Factors
   t <- dim(Xslow)[1]; n <- dim(Xslow)[2]
+  
   # 1
   L_s1 <- (eigen(cov(Xslow))$vectors[,1])#/sqrt(n)
-  F_s1 <- Xslow%*%L_s1
+  F_s1 <- Xslow %*% L_s1
+  
   # 2
   L_s2 <- (eigen(cov(Xslow))$vectors[,1:2])#/sqrt(n)
-  F_s2 <- Xslow%*%L_s2
+  F_s2 <- Xslow %*% L_s2
+  
   # 3
   L_s3 <- (eigen(cov(Xslow))$vectors[,1:3])#/sqrt(n)
-  F_s3 <- Xslow%*%L_s3
+  F_s3 <- Xslow %*% L_s3
+  
   # 4
   L_s4 <- (eigen(cov(Xslow))$vectors[,1:4])#/sqrt(n)
-  F_s4 <- Xslow%*%L_s4
+  F_s4 <- Xslow %*% L_s4
+  
   # 5
   L_s5 <- (eigen(cov(Xslow))$vectors[,1:5])#/sqrt(n)
-  F_s5 <- Xslow%*%L_s5
+  F_s5 <- Xslow %*% L_s5
   
   #### Fast Factors ####
   # 1 to 5 Factors
   t <- dim(Xfast)[1]; n <- dim(Xfast)[2]
+  
   # 1
   L_f1 <- (eigen(cov(Xfast))$vectors[,1])#/sqrt(n)
   F_f1 <- Xfast%*%L_f1

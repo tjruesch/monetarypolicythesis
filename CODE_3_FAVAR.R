@@ -60,28 +60,28 @@ for (i in 1:2){
   
   # 1
   L_f1 <- (eigen(cov(Xfast))$vectors[,1])#/sqrt(n)
-  F_f1 <- Xfast%*%L_f1
-  F_f1 = F_f1-lm(F_f1 ~ F_s1 + Rt)$coefficients[3]*Rt
+  F_f1 <- Xfast %*% L_f1
+  F_f1 = F_f1 - lm(F_f1 ~ F_s1 + Rt)$coefficients[3]*Rt
   
   # 2
   L_f2 <- (eigen(cov(Xfast))$vectors[,1:2])#/sqrt(n)
-  F_f2 <- Xfast%*%L_f2
-  F_f2 = F_f2-Rt%*%t(lm(F_f2 ~ F_s2 + Rt)$coefficients[4,])
+  F_f2 <- Xfast %*% L_f2
+  F_f2 = F_f2 - Rt %*% t(lm(F_f2 ~ F_s2 + Rt)$coefficients[4,])
   
   # 3
   L_f3 <- (eigen(cov(Xfast))$vectors[,1:3])#/sqrt(n)
-  F_f3 <- Xfast%*%L_f3
-  F_f3 = F_f3-Rt%*%t(lm(F_f3 ~ F_s3 + Rt)$coefficients[5,])
+  F_f3 <- Xfast %*% L_f3
+  F_f3 = F_f3 - Rt %*% t(lm(F_f3 ~ F_s3 + Rt)$coefficients[5,])
   
   # 4
   L_f4 <- (eigen(cov(Xfast))$vectors[,1:4])#/sqrt(n)
-  F_f4 <- Xfast%*%L_f4
-  F_f4 = F_f4-Rt%*%t(lm(F_f4 ~ F_s4 + Rt)$coefficients[6,])
+  F_f4 <- Xfast %*% L_f4
+  F_f4 = F_f4 - Rt %*% t(lm(F_f4 ~ F_s4 + Rt)$coefficients[6,])
   
   # 5
   L_f5 <- (eigen(cov(Xfast))$vectors[,1:5])#/sqrt(n)
-  F_f5 <- Xfast%*%L_f5
-  F_f5 = F_f5-Rt%*%t(lm(F_f5 ~ F_s5 + Rt)$coefficients[7,])
+  F_f5 <- Xfast %*% L_f5
+  F_f5 = F_f5 - Rt %*% t(lm(F_f5 ~ F_s5 + Rt)$coefficients[7,])
   
   #### Estimated number of factors ####
   # Estimated Factors Bai Ng
@@ -236,10 +236,10 @@ for (i in 1:2){
   #var.42$p
   
   amat <- matrix(c(NA,0,0,0,0,0,0, NA,NA,0,0,0,0,0, NA,NA,NA,0,0,0,0, NA,NA,NA,NA,0,0,0,
-                   NA,NA,NA,NA,1,0,0, NA,NA,NA,NA,NA,NA,0, NA,NA,NA,NA,NA,NA,NA), 7,7, byrow=T)
+                   NA,NA,NA,NA,1,0,0, NA,NA,NA,NA,NA,NA,0, NA,NA,NA,NA,NA,NA,NA), 7,7, byrow = T)
   svar.42 <- SVAR(var.42, estmethod = "direct", Amat = amat)
-  irf.42 <- irf(svar.42,impulse="Rt",n.ahead = 48, ortho = F, runs = 500, ci = 0.95)
-  irfc.42 <- irf(svar.42,impulse="Rt",n.ahead = 48, ortho = F, cumulative = T, ci = 0.95, runs = 500)
+  irf.42 <- irf(svar.42,impulse ="Rt",n.ahead = 48, ortho = F, runs = 500, ci = 0.95)
+  irfc.42 <- irf(svar.42,impulse ="Rt",n.ahead = 48, ortho = F, cumulative = T, ci = 0.95, runs = 500)
   
   months <- 0:48
   

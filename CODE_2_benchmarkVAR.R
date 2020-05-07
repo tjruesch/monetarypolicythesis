@@ -25,9 +25,9 @@ var.baseline$p
 amat <- matrix(c(NA, 0, 0, NA, NA, 0, NA, NA, 1), 3, 3, byrow = T)
 svar.baseline <- SVAR(var.baseline, estmethod = "direct", Amat = amat)
 irf.baseline <- irf(svar.baseline, impulse = "Rt", n.ahead = 48,
-                    ortho = F, runs = 500)
+                    ortho = F, runs = 50)
 irfc.baseline <- irf(svar.baseline, impulse = "Rt", n.ahead = 48,
-                     ortho = F, cumulative = T, runs = 500)
+                     ortho = F, cumulative = T, runs = 50)
 
 # IRF Graphs
 months <- 0:48

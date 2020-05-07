@@ -39,7 +39,8 @@ irf <- irf.baseline$irf$Rt[, 1]
 
 irf.IP <- data.frame(months, lower, irf, upper)
 
-graph.IP_print <- irf.graph.p(irf.IP, name = "Industrial Production Growth", level = "95%")
+graph.IP_print <- irf.graph.p(irf.IP, name = "Industrial Production Growth", level = "95%",
+                              height = 900, width = 600)
 graph.IP <- irf.graph.d(irf.IP, name = "Industrial Production", level = "95%")
 
 # CPI

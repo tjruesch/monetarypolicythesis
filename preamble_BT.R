@@ -4,11 +4,11 @@ rm(list = ls())
 
 # Packages installing/loading ####
 
-packinstall <- function(x){
-  for (i in 1:length(x)){
+packinstall <- function(x) {
+  for (i in 1:length(x)) {
     if (!require(x[i],character.only = TRUE)){
-      install.packages(x[i],dep=TRUE)
-      if(!require(x[i],character.only = TRUE)) stop("Package not found")
+      install.packages(x[i],dep = TRUE)
+      if (!require(x[i],character.only = TRUE)) stop("Package not found")
     }
   }
 }
@@ -18,9 +18,9 @@ packinstall <- function(x){
 unitroot <- function(ts, level = 0.011, pvalues = FALSE){
   length <- ifelse(is.null(dim(ts)), 1, dim(ts)[2])
   
-  if (length > 1){
+  if (length > 1) {
     p.values <- rep(0,length)
-    for (i in 1:length){
+    for (i in 1:length) {
       p.values[i] = suppressWarnings(adf.test(na.remove(ts[,i]))$p.value)
     }
   } else {
@@ -28,7 +28,7 @@ unitroot <- function(ts, level = 0.011, pvalues = FALSE){
     p.values = suppressWarnings(adf.test(na.remove(ts))$p.value)
   }
   
-  if (pvalues == TRUE){
+  if (pvalues == TRUE) {
     return(p.values)
   } else {
     if (sum(p.values < level) == length(p.values)) return("stationary")
@@ -126,7 +126,7 @@ seasonal <- function(ts, test = "qs", level = 0.01, pvalues = FALSE){
 # ci option currently not in use
 
 irf.graph.p <- function(X, name = NULL, level = "95%", ci = TRUE, height = 600, width = 600){
-  hc <- highchart()%>%
+  hc <- highchart() %>%
     hc_title(text = name, style = list(fontSize = "30px")) %>%
     hc_yAxis(plotLines = list(
       list(color = "#000000",
@@ -134,7 +134,7 @@ irf.graph.p <- function(X, name = NULL, level = "95%", ci = TRUE, height = 600, 
            width = 2,
            value = 0)),
       labels = list(style = list(fontSize = "18px"))) %>%
-    hc_xAxis(labels=list(style = list(fontSize = "18px"))) %>%
+    hc_xAxis(labels = list(style = list(fontSize = "18px"))) %>%
     hc_add_series(X$irf, color = "#000000", name = "Impulse Response", marker = F) %>%
     hc_legend(enabled = FALSE, itemStyle = list(fontSize = "20px")) %>%
     hc_size(width = width, height = height) %>%
@@ -154,6 +154,7 @@ irf.graph.d <- function(X, name = NULL, level = "95%", ci = TRUE){
            dashStyle = "DashDot",
            width = 2,
            value = 0))) %>%
+    hc_xAxis(title = list(text = "months")) %>%
     hc_add_series(X, hcaes(x = months, low = lower, high = upper),
                   type = "arearange", color = "#FF0000", marker = F, 
                   fillOpacity = 0.1, name = paste(level, "Confidence Interval")) %>%

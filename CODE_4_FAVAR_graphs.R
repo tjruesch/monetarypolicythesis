@@ -19,6 +19,7 @@ for (i in 1:2) {
 
   # Main Results
   # CPI Growth -> inflation
+  
   CPI_42p <- FAVAR.IRF("BDUUFA01F", title = "CPI", growth = T,
                        height = 600, smoothing = ifelse(smooth, TRUE, FALSE))
   # IP Growth
@@ -36,6 +37,7 @@ for (i in 1:2) {
   # Slow:
 
   # Terms of Trade: BDTOTPRCF
+
   ToT_42p <- FAVAR.IRF("BDTOTPRCF", title = "Terms of Trade", growth = TRUE,
                        height = 600, smoothing = ifelse(smooth, TRUE, FALSE))
   # Export Price: BDEXPPRCF
@@ -68,10 +70,11 @@ for (i in 1:2) {
   # General Gov deficit: BDGGOVBLA
   GDF_42p <- FAVAR.IRF("BDGGOVBLA", title = "General Government Deficit/Surplus", growth = FALSE,
                        height = 600, smoothing = ifelse(smooth, TRUE, FALSE))
-
+  
   # Fast:
 
   # JPY/EUR: JPEURSP
+
   JPY_42p <- FAVAR.IRF("JPEURSP", slow = FALSE, title = "JPY/EUR Exchange Rate", growth = TRUE,
                        height = 600, smoothing = ifelse(smooth, TRUE, FALSE))
   # USD/EUR: USEURSP

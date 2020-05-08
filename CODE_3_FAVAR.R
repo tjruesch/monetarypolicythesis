@@ -33,26 +33,34 @@ for (i in 1:2) {
   #### Slow Factors ####
   # 1 to 5 Factors
   t <- dim(Xslow)[1]; n <- dim(Xslow)[2]
+  
   # 1
-  L_s1 <- (eigen(cov(Xslow))$vectors[, 1])#/sqrt(n)
-  F_s1 <- Xslow %*% L_s1
-  # 2
-  L_s2 <- (eigen(cov(Xslow))$vectors[, 1:2])#/sqrt(n)
-  F_s2 <- Xslow %*% L_s2
-  # 3
-  L_s3 <- (eigen(cov(Xslow))$vectors[, 1:3])#/sqrt(n)
-  F_s3 <- Xslow %*% L_s3
-  # 4
-  L_s4 <- (eigen(cov(Xslow))$vectors[, 1:4])#/sqrt(n)
-  F_s4 <- Xslow %*% L_s4
-  # 5
-  L_s5 <- (eigen(cov(Xslow))$vectors[, 1:5])#/sqrt(n)
-  F_s5 <- Xslow %*% L_s5
 
+  L_s1 <- (eigen(cov(Xslow))$vectors[,1])#/sqrt(n)
+  F_s1 <- Xslow %*% L_s1
+  
+  # 2
+  L_s2 <- (eigen(cov(Xslow))$vectors[,1:2])#/sqrt(n)
+  F_s2 <- Xslow %*% L_s2
+  
+  # 3
+  L_s3 <- (eigen(cov(Xslow))$vectors[,1:3])#/sqrt(n)
+  F_s3 <- Xslow %*% L_s3
+  
+  # 4
+  L_s4 <- (eigen(cov(Xslow))$vectors[,1:4])#/sqrt(n)
+  F_s4 <- Xslow %*% L_s4
+  
+  # 5
+  L_s5 <- (eigen(cov(Xslow))$vectors[,1:5])#/sqrt(n)
+  F_s5 <- Xslow %*% L_s5
+  
   #### Fast Factors ####
   # 1 to 5 Factors
   t <- dim(Xfast)[1]; n <- dim(Xfast)[2]
+  
   # 1
+
   L_f1 <- (eigen(cov(Xfast))$vectors[, 1])#/sqrt(n)
   F_f1 <- Xfast %*% L_f1
   F_f1 <- F_f1 - lm(F_f1 ~ F_s1 + Rt)$coefficients[3] * Rt
@@ -240,10 +248,10 @@ for (i in 1:2) {
   #var.42$p
 
   amat <- matrix(c(NA,0,0,0,0,0,0, NA,NA,0,0,0,0,0, NA,NA,NA,0,0,0,0, NA,NA,NA,NA,0,0,0,
-                   NA,NA,NA,NA,1,0,0, NA,NA,NA,NA,NA,NA,0, NA,NA,NA,NA,NA,NA,NA), 7,7, byrow=T)
+                   NA,NA,NA,NA,1,0,0, NA,NA,NA,NA,NA,NA,0, NA,NA,NA,NA,NA,NA,NA), 7,7, byrow = T)
   svar.42 <- SVAR(var.42, estmethod = "direct", Amat = amat)
-  irf.42 <- irf(svar.42,impulse="Rt",n.ahead = 48, ortho = F, runs = 500, ci = 0.95)
-  irfc.42 <- irf(svar.42,impulse="Rt",n.ahead = 48, ortho = F, cumulative = T, ci = 0.95, runs = 500)
+  irf.42 <- irf(svar.42,impulse ="Rt",n.ahead = 48, ortho = F, runs = 500, ci = 0.95)
+  irfc.42 <- irf(svar.42,impulse ="Rt",n.ahead = 48, ortho = F, cumulative = T, ci = 0.95, runs = 500)
 
   months <- 0:48
 

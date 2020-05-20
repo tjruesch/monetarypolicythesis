@@ -15,4 +15,6 @@ To replicate the graphs from my paper, you have two options:
   <li>Run (and feel free to inspect/change) the "CODE"-files to see how the graphs are constructed and subsequently run the "GRAPHS" files if you wish so</li>
 </ol>
 
-Feel free to open an issue or send me an [email](mailto:truesch@mail.uni-mannheim.de) when you have questions or find errors in my analysis.
+Feel free to open an issue or send me an [email](mailto:truesch@mail.uni-mannheim.de) when you have questions or find errors in my analysis.<br/>
+You can find the submitted version of the paper [here](https://drive.google.com/open?id=1icB47gSR78lk2RCmMOmKI3nXT2zK_EMR).
+

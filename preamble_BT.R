@@ -380,6 +380,26 @@ FAVAR.IRF <- function(name,slow = TRUE,title = NULL,print = TRUE,growth = FALSE,
     }
   }
 }
+
+#### standardize time series ####
+
+standardize <- function(ts) {
+  if (sum(is.na(ts)) != 0) {
+    stop('please provide data without NAs')
+    }
+  if (is.null(dim(ts)) == FALSE) {
+    ts_out <- ts
+    for (i in 1:ncol(ts)) {
+      ts_out[,i] <- (ts[,i] - mean(ts[,i])) / (sd(ts[,i]))
+    }
+  } else {
+    ts_out <- (ts - mean(ts)) / (sd(ts))
+  }
+  return(ts_out)
+}
+
+
+
 #### install packages ####
 
 packages <- c("readr","readxl","zoo","xts","tseries","car","lmtest","dynlm","seastests","strucchange","seasonal",

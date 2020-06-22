@@ -15,10 +15,10 @@ To replicate the graphs from my paper, you have two options:
   <li>Run (and feel free to inspect/change) the "CODE"-files to see how the graphs are constructed and subsequently run the "GRAPHS" files if you wish so</li>
 </ol>
 
-Feel free to open an issue or send me an [email](mailto:truesch@mail.uni-mannheim.de) when you have questions or find errors in my analysis.<br/>
-You can find the submitted version of the paper [here](https://drive.google.com/open?id=1icB47gSR78lk2RCmMOmKI3nXT2zK_EMR).
-A current working paper version is available [here](https://drive.google.com/file/d/1Xy2NUWD3_4afH7hcLdh-iq7G5rVSayEO/view?usp=sharing).
-
 ### Abstract
 
 I examine the methodology and economic theory behind the FAVAR approach from [Bernanke, Boivin, and Eliasz (2005)](https://academic.oup.com/qje/article-abstract/120/1/387/1931468) and study its application in an empirical analysis on the effects of monetary policy for Germany. While the basic tools used are not new, this paper focuses on the empirical implementation and extends the analysis of [Bernanke, Boivin, and Eliasz (2005)](https://academic.oup.com/qje/article-abstract/120/1/387/1931468) to unbalanced panels. I use an EM-algorithm in combination with principal component estimation for the economic factors to handle mixed frequencies and missing observations, which potentially improves the accuracy of the dynamic responses as it allows the econometrician to use a broader data set and produces monthly impulse responses. The responses are robust to the number of factors and the lag-length and to the choice of the monetary policy tool.
+
+Feel free to open an issue or send me an [email](mailto:truesch@mail.uni-mannheim.de) when you have questions or find errors in my analysis.<br/>
+You can find the submitted version of the paper [here](https://drive.google.com/open?id=1icB47gSR78lk2RCmMOmKI3nXT2zK_EMR).
+A current working paper version is available [here](https://drive.google.com/file/d/1Xy2NUWD3_4afH7hcLdh-iq7G5rVSayEO/view?usp=sharing).

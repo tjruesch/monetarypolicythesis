@@ -20,7 +20,7 @@ exrates <- window(as.ts(exratesM_adj),
 inconq <- window(as.ts(inconsQ_adj), start = c(1999, 1),
                  end = c(2019, 3), freq = 4)
 
-incon <- ts(matrix(NA, 249, 43), start = c(1999, 1), freq = 12)
+incon <- ts(matrix(NA, 249, 43), start = c(1999, 1), frequency = 12)
 for (t in 1:83) incon[3 * t, ] <- inconq[t, ]
 
 colnames(fin)[31] <- "Rt"
@@ -131,12 +131,12 @@ highchart(type = "chart") %>%
   hc_add_series(X[, 152], name = "Imputed Series") %>%
   hc_exporting(enabled = TRUE)
 
-# Standardization ####
+##### Standardization #####
 
 for (i in 1:dim(X)[2]) {
   X[, i] <- (X[, i] - mean(X[, i])) / sd(X[, i])
 }
-X <- ts(X, start = c(1999,1), end = c(2019, 9), freq = 12)
+X <- ts(X, start = c(1999,1), end = c(2019, 9), frequency = 12)
 Xslow <- X[, which(slow == 1)]
 XR <- cbind(X, Rt)
 colnames(XR) <- c(varnames, "Rt")

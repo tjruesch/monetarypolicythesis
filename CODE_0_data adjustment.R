@@ -251,54 +251,134 @@ seasonal(surveysM)
 
 library(dygraphs)
 
+exratesM <- window(as.ts(exratesM), start = c(1998,12))
+exratesM_adj <- window(as.ts(exratesM), start = c(1999,1))
 
-
-exrates_plot <- ts(cbind(na.remove(exratesM)))
-
-
-for (i in 1:ncol(exrates_plot)) {
-  plot(standardize(exrates_plot[,i]))
-  Sys.sleep(2)
+for (series in c(1,3,5,9,10)) {
+  if (unitroot(exratesM[,series], level = .1) == 'stationary') {
+    exratesM_adj[,series] <- exratesM[-1,series]
+  } else {
+    exratesM_adj[,series] <- diff(log(exratesM[,series]))
+  }
+}
+for (series in c(2,4,6,7,8)) {
+  if (unitroot(exratesM[,series], level = .1) == 'stationary') {
+    exratesM_adj[,series] <- exratesM[-1,series]
+  } else {
+    ts <- exratesM[-1,series]
+    exratesM_adj[,series] <- c(NA,diff(log(ts)))
+  }
 }
 
-dygraph(standardize(na.omit(exratesM)), 
-        main = 'Monthly Exchange Rate Data') %>%
-  dyLegend(show = 'onmouseover', hideOnMouseOut = TRUE)
-
-
-
-
+dygraph(standardize(na.omit(exratesM_adj[,-6])),
+        main = 'Standardized and Adjusted Exchange Rate Data') %>%
+  dyLegend(show = 'onmouseover') %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
 
 
 # Fin Markets
 # interest rates 2
 # money and credit stuff 5
 # stock prices 5
-finmarketsM_adj_1_9 <- diff(log(finmarketsM[,1:9]))
-finmarketsM_adj_10_26 <- diff(finmarketsM[,10:26])
-finmarketsM_adj_27_30 <- diff(log(finmarketsM[,27:30]))
 
-finmarketsM_adj_31 <- finmarketsM[,31]
-finmarketsM_adj_31 <- (as.ts(finmarketsM[,31]) - decompose(as.ts(finmarketsM[,31]))$trend)[-1]
-finmarketsM_adj <- cbind(finmarketsM_adj_1_9,
-                         finmarketsM_adj_10_26,
-                         finmarketsM_adj_27_30,
-                         finmarketsM_adj_31)
+finmarketsM <- window(as.ts(finmarketsM), start = c(1998,12))
+finmarketsM_adj <- window(as.ts(finmarketsM), start = c(1999,1))
+
+# interest_rates
+unitroot(finmarketsM[,10:26], pvalues = TRUE)
+finmarketsM_adj[,10:26] <- finmarketsM[-1,10:26]
+
+dygraph(standardize(na.omit(finmarketsM[,10:26])),
+        main = 'Standardized and Adjusted Interest Rates') %>%
+  dyLegend(show = 'onmouseover') %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
+
+# money
+unitroot(finmarketsM[,1:9], pvalues = TRUE)
+finmarketsM_adj[,1:9] <- diff(log(finmarketsM[,1:9]))
+
+dygraph(standardize(na.omit(finmarketsM_adj[,1:9])),
+        main = 'Standardized and Adjusted Money Data') %>%
+  dyLegend(show = 'onmouseover') %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
+
+# stock market
+unitroot(finmarketsM[,27:30], pvalues = TRUE)
+finmarketsM_adj[,27:30] <- diff(log(finmarketsM[,27:30]))
+
+dygraph(standardize(na.omit(finmarketsM_adj[,27:30])),
+        main = 'Standardized and Adjusted Stock Market Returns') %>%
+  dyLegend(show = 'onmouseover') %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
+
+# Rt
+unitroot(finmarketsM[,31], pvalues = T)
+finmarketsM_adj[,31] <- finmarketsM[-1,31]
+
+
+dygraph(standardize(na.omit(finmarketsM_adj)),
+        main = 'Standardized and Adjusted Stock Market Returns') %>%
+  dyLegend(show = 'onmouseover') %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
 
 
 # Income/Consumption
 # all 5 exept 21 23 26 40 41
-zero = rep(NA,dim(inconsQ)[2])
-for (i in 1:dim(inconsQ)[2]){
-  zero[i] <- ifelse(min(na.remove(inconsQ[,i]))<0,1,0)
+
+inconsQ <- window(as.ts(inconsQ), start = c(1998,4))
+inconsQ_adj <- window(as.ts(inconsQ), start = c(1999,1))
+
+View(inconsQ)
+
+
+for (i in 1:39) {
+  ts <- inconsQ[-c(85,86),i]
+  if (min(ts) < 0) {
+    ts <- ts + abs(min(ts)) + 1
+  }
+  inconsQ_adj[,i] <- c(diff(log(ts)), NA, NA)
 }
-colnames(inconsQ)[which(zero == 1)]
-unitroot(diff(inconsQ[,which(zero == 1)]), pvalues=T)
-inconsQ_adj_log <- diff(log(inconsQ[,-c(21,23,26,40,41)]))
-inconsQ_adj_diff <- diff(inconsQ[,c(21,23,26,40,41)])
-inconsQ_adj <- cbind(inconsQ_adj_log,inconsQ_adj_diff)
+inconsQ_adj[,40] <- inconsQ[-1,40]
+
+for (i in 41:43) {
+  ts <- inconsQ[-c(84,85,86),i]
+  if (min(ts) < 0) {
+    ts <- ts + abs(min(ts)) + 1
+  }
+  inconsQ_adj[,i] <- c(diff(log(ts)), NA, NA, NA)
+}
+
+
+dygraph(standardize(na.omit(inconsQ_adj)),
+        main = 'Standardized and Adjusted Income and Expenditure Data') %>%
+  dyLegend(show = 'follow') %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3)) %>%
+  dyAxis('y', label = 'Growth Rates*')
+
 
 # Labor, all 5
+laborM <- laborM[,c(1:8,12,9:11)]
+
+######
+#HERE#
+######
+
+
+unitroot(laborM, pvalues = T)
+
+View(laborM)
+
+unitroot(laborM[,'EGEMPSTWP'])
+unitroot(laborM[,'WGEMPSTWP'])
+plot(laborM[,'BDEMPSTWP'])
+
+colnames(laborM)[8]
+
+#' 1 changes
+#' 2 changes
+
+
+
 laborM_adj <- diff(log(laborM))
 
 # Prices

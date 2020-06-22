@@ -1,4 +1,4 @@
-# Monetary Policy Evaluation - [Bernanke et al. (2005](https://academic.oup.com/qje/article-abstract/120/1/387/1931468) Revisited
+# Monetary Policy Evaluation - [Bernanke et al. (2005)](https://academic.oup.com/qje/article-abstract/120/1/387/1931468) Revisited
 
 Here you can find supporting documentation for the Paper *"Monetary Policy Evaluation with Data Irregularities: A Factor Augmented Vector Autoregression Analysis"*. This Paper started as my bachelor thesis at the University of Mannheim. I currently see it as an open project/working paper with no intentions for publication in this form.
 

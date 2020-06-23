@@ -1,6 +1,6 @@
 rm(list = ls())
 source("preamble_BT.R")
-load("A_data.Rdata")
+load("B_data.Rdata")
 
 # Correct time Span ####
 fin <- window(as.ts(finmarketsM_adj),
@@ -37,16 +37,18 @@ colnames(Data) <- c(colnames(prices), colnames(production), colnames(exrates),
                     colnames(labor), colnames(spreads), colnames(surveys),
                     colnames(fin), colnames(inconq))
 varnames <- colnames(Data)
-slow <- c(rep(1,33), rep(1,7), rep(0,10), rep(1,12), rep(0,10),
+slow <- c(rep(1,27), rep(1,7), rep(0,10), rep(1,12), rep(0,10),
           rep(0,21), rep(0,30), rep(1,43))
 Xslow <- Data[, which(slow == 1)]
 X <- Data
 
 # Imputation Slow ####
 
-#nb1 <- estim_PC(Xslow, ncp.min = 50, ncp.max = 55, method="Regularized",
-#                method.cv = "Kfold", nbsim = 2, pNA=.01)
-nb1 <- 30
+
+nb1 <- my_estim_ncpPCA(Xslow, ncp.min = 20, ncp.max = 55, method="Regularized",
+                       method.cv = "Kfold", nbsim = 100, pNA=.05, maxiter = 1e6)
+print(nb1)
+
 XslowPCA <- imputePCA(Xslow, ncp = nb1, method = "Regularized",
                       maxiter = 1e10)$fittedX
 

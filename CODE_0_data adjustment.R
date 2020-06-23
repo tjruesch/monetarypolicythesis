@@ -67,6 +67,12 @@ inconsQ <- zoo(
 inconsQ <- cbind(inconsQ, exratesQ)
 rm(exratesQ)
 
+
+M1 <- ts(read.csv("raw_data/m1.csv", header=TRUE)[,3], 
+         start = c(1981,1), frequency = 12)
+APP <- ts(read_excel("raw_data/APP.xlsx", sheet = "Sheet1")$Sum, 
+          start = c(2014,10), frequency = 12, end = c(2019,9))
+
 ##### Create Spreads #####
 
 attach(as.data.frame(finmarketsM))
@@ -101,6 +107,9 @@ laborM <- laborM[,-c(1,13:17,19:21)]
 pricesM <- pricesM[,-c(10,13:15,18)]
 surveysM <- surveysM[,-c(3:5)]
 inconsQ <- inconsQ[,-c(2,43)]
+
+## also remove redundant series
+pricesM <- pricesM[,-c(2,3,5,6,7,24)]
 
 ##### Seasonal Adjustment #####
 
@@ -153,7 +162,6 @@ inconsQ[,43] <- zoo(ts(c(rep(NA,4),series(seas(as.ts(inconsQ[,43])), series = "s
                     frequency = 4)
 
 # Labor
-which(seasonal(laborM))
 
 for (i in c(1,4,7)) {
   laborM[,i] <- zoo(ts(c(series(seas(as.ts(laborM[,i])), series = "s11"),
@@ -199,42 +207,43 @@ laborM[,3] <- zoo(ts(c(rep(NA,17), series(seas(as.ts(laborM[,3])), series = "s11
                   frequency = 12)
 
 # Prices
-which(seasonal(pricesM))
 
-c1 <- which(seasonal(pricesM))[c(1,2)]
-c2 <- which(seasonal(pricesM))[5:11]
-c3 <- which(seasonal(pricesM))[c(12,14)]
+pricesM[,1] <- zoo(ts(c(series(seas(as.ts(pricesM[,1])), series = "s11"),
+                         NA), 
+                       start = start(pricesM), frequency = 12), 
+                    frequency = 12)
 
-for (i in c1) {
-  pricesM[,i] <- zoo(ts(c(series(seas(as.ts(pricesM[,i])), series = "s11"), NA), 
-                        start = start(pricesM), frequency = 12), 
-                     frequency = 12)
-}
+pricesM[,2] <- zoo(ts(c(rep(NA,72), series(seas(as.ts(pricesM[,2])), series = "s11"),
+                         NA), 
+                       start = start(pricesM), frequency = 12), 
+                    frequency = 12)
 
-for (i in c2) {
+pricesM[,5] <- zoo(ts(c(rep(NA,12), series(seas(as.ts(pricesM[,5])), series = "s11"),
+                         NA), 
+                       start = start(pricesM), frequency = 12), 
+                    frequency = 12)
+
+for (i in c(8:12, 17)) {
   pricesM[,i] <- zoo(ts(c(rep(NA,12), series(seas(as.ts(pricesM[,i])), series = "s11"),
                           NA), 
                         start = start(pricesM), frequency = 12), 
                      frequency = 12)
 }
 
-for (i in c3) {
-  pricesM[,i] <- zoo(ts(c(series(seas(as.ts(pricesM[,i])), series = "s11"),NA,NA), 
-                        start = start(pricesM), frequency = 12), 
-                     frequency = 12)
-}
-
-pricesM[,4] <- zoo(ts(c(rep(NA,72), series(seas(as.ts(pricesM[,4])), series = "s11"),
-                        NA), 
+pricesM[,19] <- zoo(ts(c(series(seas(as.ts(pricesM[,19])), series = "s11"),
+                        NA, NA), 
                       start = start(pricesM), frequency = 12), 
                    frequency = 12)
-pricesM[,5] <- zoo(ts(c(rep(NA,73), series(seas(as.ts(pricesM[,5])), series = "s11"),
-                        NA), start = start(pricesM), frequency = 12),
+
+pricesM[,23] <- zoo(ts(c(rep(NA,60), series(seas(as.ts(pricesM[,23])), series = "s11"),
+                        NA, NA), 
+                      start = start(pricesM), frequency = 12), 
                    frequency = 12)
-pricesM[,29] <- zoo(ts(c(rep(NA,60), series(seas(as.ts(pricesM[,29])), series = "s11"),
-                         NA, NA), 
-                       start = start(pricesM), frequency = 12), 
-                    frequency = 12)
+
+pricesM[,25] <- zoo(ts(c(series(seas(as.ts(pricesM[,25])), series = "s11"),
+                        NA, NA), 
+                      start = start(pricesM), frequency = 12), 
+                   frequency = 12)
 
 # Production
 seasonal(productionM)
@@ -248,8 +257,6 @@ seasonal(surveysM)
 ###### Stationarity #####
 
 # Exrates, all 5
-
-library(dygraphs)
 
 exratesM <- window(as.ts(exratesM), start = c(1998,12))
 exratesM_adj <- window(as.ts(exratesM), start = c(1999,1))
@@ -328,9 +335,6 @@ dygraph(standardize(na.omit(finmarketsM_adj)),
 inconsQ <- window(as.ts(inconsQ), start = c(1998,4))
 inconsQ_adj <- window(as.ts(inconsQ), start = c(1999,1))
 
-View(inconsQ)
-
-
 for (i in 1:39) {
   ts <- inconsQ[-c(85,86),i]
   if (min(ts) < 0) {
@@ -348,7 +352,6 @@ for (i in 41:43) {
   inconsQ_adj[,i] <- c(diff(log(ts)), NA, NA, NA)
 }
 
-
 dygraph(standardize(na.omit(inconsQ_adj)),
         main = 'Standardized and Adjusted Income and Expenditure Data') %>%
   dyLegend(show = 'follow') %>%
@@ -356,56 +359,77 @@ dygraph(standardize(na.omit(inconsQ_adj)),
   dyAxis('y', label = 'Growth Rates*')
 
 
-# Labor, all 5
+# Labor, 1:9 growth 10:12 no changes
 laborM <- laborM[,c(1:8,12,9:11)]
-
-######
-#HERE#
-######
-
-
 unitroot(laborM, pvalues = T)
 
-View(laborM)
+laborM <- window(as.ts(laborM), start = c(1998,12))
+laborM_adj <- window(as.ts(laborM), start = c(1999,1))
 
-unitroot(laborM[,'EGEMPSTWP'])
-unitroot(laborM[,'WGEMPSTWP'])
-plot(laborM[,'BDEMPSTWP'])
+for (i in 1:9) {
+  laborM_adj[,i] <- laborM[,i] %>% log() %>% diff()
+}
 
-colnames(laborM)[8]
+dygraph(standardize(na.omit(laborM_adj)), 
+        main = 'Standardized and Adjusted Labor Market Data') %>%
+  dyLegend(show = 'onmouseover') %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
 
-#' 1 changes
-#' 2 changes
-
-
-
-laborM_adj <- diff(log(laborM))
 
 # Prices
-# all 5 except 2 3 5 6 7 24
-zero = rep(NA,dim(pricesM)[2])
-for (i in 1:dim(pricesM)[2]){
-  zero[i] <- ifelse(min(na.remove(pricesM[,i]))<0,1,0)
+
+pricesM <- window(as.ts(pricesM), start = c(1998,12))
+pricesM_adj <- window(as.ts(pricesM), start = c(1999,1))
+
+for (i in 1:26) {
+  pricesM_adj[,i] <- pricesM[,i]%>%log()%>%diff()
 }
-dif <- c(2,3,5,6,7,24)
 
-pricesM_adj_diff <- diff(pricesM[,dif])
-pricesM_adj_log <- diff(log(pricesM[,-dif]))
-pricesM_adj <- cbind(pricesM_adj_diff,pricesM_adj_log)
+dygraph(standardize(na.omit(pricesM_adj)), 
+        main = 'Standardized and Adjusted Price Data') %>%
+  dyLegend(show = 'onmouseover') %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
 
-# Production, all 5
-productionM_adj <- diff(log(productionM))
 
-# Spreads, all 2
-spreadsM_adj <- diff(spreadsM)
+# Production, no changes
+
+productionM <- window(as.ts(productionM), start = c(1998,12))
+productionM_adj <- window(as.ts(productionM), start = c(1999,1))
+
+dygraph(standardize(na.omit(productionM_adj)),
+        main = 'Standardized and Adjusted Production') %>%
+  dyLegend(show = 'onmouseover') %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
+
+
+# Spreads, no changes
+
+spreadsM <- window(as.ts(spreadsM), start = c(1998,12))
+spreadsM_adj <- window(as.ts(spreadsM), start = c(1999,1))
+
+dygraph(standardize(na.omit(spreadsM_adj)),
+        main = 'Standardized and Adjusted Spreads') %>%
+  dyLegend(show = 'onmouseover') %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
+
 
 # Surveys, all 1
-surveysM_adj <- surveysM
 
-# Saving ####
+surveysM <- window(as.ts(surveysM), start = c(1998,12))
+surveysM_adj <- window(as.ts(surveysM), start = c(1999,1))
 
-M1 <- ts(read.csv("C:/Users/tomjo/Dropbox/Uni/Semester 6/Bachelor Thesis/data/m1.csv", header=TRUE)[,3], start = c(1981,1), freq = 12)
-APP <- ts(read_excel("C:/Users/tomjo/Dropbox/Uni/Semester 6/Bachelor Thesis/data/APP.xlsx", sheet = "Sheet1")$Sum, start = c(2014,10), freq = 12, end = c(2019,9))
+dygraph(standardize(na.omit(surveysM_adj)),
+        main = 'Standardized and Adjusted Spreads') %>%
+  dyLegend(show = 'onmouseover') %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
 
-save(list = c("exratesM_adj", "finmarketsM_adj", "inconsQ_adj", "laborM_adj", "pricesM_adj", "productionM_adj", "spreadsM_adj", "surveysM_adj", "M1", "APP"), file="data.Rdata")
+
+##### Saving #####
+
+save(list = c("exratesM_adj", "finmarketsM_adj", 
+              "inconsQ_adj", "laborM_adj", "pricesM_adj", 
+              "productionM_adj", "spreadsM_adj", "surveysM_adj", 
+              "M1", "APP"), 
+     file="data.Rdata")
+
 

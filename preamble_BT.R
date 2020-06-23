@@ -401,9 +401,10 @@ standardize <- function(ts) {
 
 #### install packages ####
 
-packages <- c("readr","readxl","zoo","xts","tseries","car","lmtest","dynlm","seastests","strucchange","seasonal",
-              "fanplot","ggplot2","gridExtra","stargazer","mFilter","missMDA","ggfortify","dygraphs","highcharter",
-              "knitr", "vars", "pracma", "grDevices")
+packages <- c("readr","readxl","zoo","xts","tseries","car","lmtest","dynlm",
+              "seastests","strucchange","seasonal","fanplot","ggplot2",
+              "gridExtra","stargazer","mFilter","missMDA","ggfortify","dygraphs",
+              "highcharter","knitr", "vars", "pracma", "grDevices")
 packinstall(packages)
 
 

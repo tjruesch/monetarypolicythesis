@@ -8,7 +8,7 @@ packinstall <- function(x) {
   for (i in 1:length(x)) {
     if (!require(x[i],character.only = TRUE)){
       install.packages(x[i],dep = TRUE)
-      if (!require(x[i],character.only = TRUE)) stop("Package not found")
+      if (!require(x[i],character.only = TRUE)) warning("Package not found")
     }
   }
 }

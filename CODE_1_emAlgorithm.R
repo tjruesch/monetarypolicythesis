@@ -45,9 +45,9 @@ X <- Data
 # Imputation Slow ####
 
 
-nb1 <- my_estim_ncpPCA(Xslow, ncp.min = 20, ncp.max = 55, method="Regularized",
-                       method.cv = "Kfold", nbsim = 100, pNA=.05, maxiter = 1e6)
-print(nb1)
+# nb1 <- my_estim_ncpPCA(Xslow, ncp.min = 20, ncp.max = 55, method="Regularized",
+#                        method.cv = "Kfold", nbsim = 100, pNA=.05, maxiter = 1e6)
+nb1 <- 14
 
 XslowPCA <- imputePCA(Xslow, ncp = nb1, method = "Regularized",
                       maxiter = 1e10)$fittedX
@@ -92,7 +92,7 @@ for (i in slowquarterly) {
 #nb2 <- estim_ncpPCA(X, ncp.min = 0, ncp.max = 30, method = "EM",
 #                    method.cv = "Kfold", nbsim = 50, pNA = 0.01)
 
-nb2 <- 28
+nb2 <- 14
 
 s <- which(slow == 1)
 for (i in length(s)) {

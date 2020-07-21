@@ -4,16 +4,16 @@ load("B_data.Rdata")
 
 # Default instrument: Rt ####
 
-Rt <- window(as.ts(na.remove(finmarketsM_adj[, 31])), start = c(1999, 6),
+Rt <- window(as.ts(na.remove(finmarketsM_adj[, 31])), start = c(1999, 7),
              end = c(2019, 3), freq = 12)
-Rt <- na.remove(diff(Rt))
+Rt <- (Rt - mean(Rt)) / sd(Rt)
+
+#Rt <- na.remove(diff(Rt))
 
 IP <- window(as.ts(productionM_adj[, "IPGENERAL"]), start = c(1999, 7),
              end = c(2019, 3), freq = 12)
 CPI <- window(as.ts(pricesM_adj[,"BDUUFA01F"]), start = c(1999, 7),
               end = c(2019, 3), freq = 12)
-
-Rt <- (Rt - mean(Rt)) / sd(Rt)
 IP <- (IP - mean(IP)) / sd(IP)
 CPI <- (CPI - mean(CPI)) / sd(CPI)
 
@@ -25,9 +25,7 @@ var.baseline$p
 amat <- matrix(c(NA, 0, 0, NA, NA, 0, NA, NA, 1), 3, 3, byrow = T)
 svar.baseline <- SVAR(var.baseline, estmethod = "direct", Amat = amat)
 irf.baseline <- irf(svar.baseline, impulse = "Rt", n.ahead = 48,
-                    ortho = F, runs = 50)
-irfc.baseline <- irf(svar.baseline, impulse = "Rt", n.ahead = 48,
-                     ortho = F, cumulative = T, runs = 50)
+                    ortho = F, runs = 500)
 
 # IRF Graphs
 months <- 0:48
@@ -60,11 +58,15 @@ irf.Rt <- data.frame(months, lower, irf, upper)
 graph.Rt_print <- irf.graph.p(irf.Rt, name = "MRO Interest Rate", level = "95%")
 graph.Rt <- irf.graph.d(irf.Rt, name = "MRO Interest Rate", level = "95%")
 
+
 graph.Rt
 graph.CPI
 graph.IP
 
 
+####################################
+####################################
+####################################
 
 
 

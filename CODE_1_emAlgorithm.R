@@ -22,6 +22,7 @@ inconq <- window(as.ts(inconsQ_adj), start = c(1999, 1),
 
 incon <- ts(matrix(NA, 249, 43), start = c(1999, 1), frequency = 12)
 for (t in 1:83) incon[3 * t, ] <- inconq[t, ]
+colnames(incon) <- colnames(inconq)
 
 colnames(fin)[31] <- "Rt"
 
@@ -37,13 +38,17 @@ colnames(Data) <- c(colnames(prices), colnames(production), colnames(exrates),
                     colnames(labor), colnames(spreads), colnames(surveys),
                     colnames(fin), colnames(inconq))
 varnames <- colnames(Data)
-slow <- c(rep(1,27), rep(1,7), rep(0,10), rep(1,12), rep(0,10),
-          rep(0,21), rep(0,30), rep(1,43))
+
+slow <- c(rep(1,ncol(prices)), rep(1,ncol(production)), rep(0,ncol(exrates)), rep(1,ncol(labor)), rep(0,ncol(spreads)),
+          rep(0,ncol(surveys)), rep(0,ncol(fin)), rep(1,ncol(incon)))
 Xslow <- Data[, which(slow == 1)]
 X <- Data
 
-# Imputation Slow ####
+rm(list = c("exrates", "exratesM_adj", "fin", "finmarketsM_adj", "inconq", "inconsQ_adj", 'labor', "laborM_adj",
+            "packages", "prices", "pricesM_adj", "production", "productionM_adj", "surveys", "surveysM_adj", "spreads",
+            "spreadsM_adj", "t"))
 
+# Imputation Slow ####
 
 # nb1 <- my_estim_ncpPCA(Xslow, ncp.min = 20, ncp.max = 55, method="Regularized",
 #                        method.cv = "Kfold", nbsim = 100, pNA=.05, maxiter = 1e6)
@@ -52,8 +57,8 @@ nb1 <- 14
 XslowPCA <- imputePCA(Xslow, ncp = nb1, method = "Regularized",
                       maxiter = 1e10)$fittedX
 
-slowmonthly <- 1:52
-slowquarterly <- 53:95
+slowmonthly <- 1:which(colnames(Xslow) == "BDGDP...D")
+slowquarterly <- (which(colnames(Xslow) == "BDGDP...D")+1):ncol(Xslow)
 Xslowimp <- Xslow
 
 # monthly observations
@@ -66,8 +71,10 @@ for (i in slowmonthly) {
 
 # quarterly observations
 
-Xslowimp[249, 95] <- XslowPCA[249, 95]
-Xslow[249, 95] <- Xslowimp[249, 95]
+for (i in (ncol(Xslow)-3):ncol(Xslow)) {
+  Xslowimp[249, i] <- XslowPCA[249, i]
+  Xslow[249, i] <- Xslowimp[249, i]
+}
 
 for (i in slowquarterly) {
   for (t in 1:249) {
@@ -87,6 +94,8 @@ for (i in slowquarterly) {
   }
 }
 
+# sum(is.na(Xslowimp)) == 0     # Check completeness of imputation
+
 # Imputation Fast (Full Data Set) ####
 
 #nb2 <- estim_ncpPCA(X, ncp.min = 0, ncp.max = 30, method = "EM",
@@ -94,43 +103,43 @@ for (i in slowquarterly) {
 
 nb2 <- 14
 
-s <- which(slow == 1)
-for (i in length(s)) {
-  X[, s[i]] <- Xslowimp[, i]
+# replace
+for (name in colnames(Xslowimp)) {
+  X[,name] <- Xslowimp[,name]
 }
 
-monthly <- 1:167
-Ximp <- cbind(X, Rt)
-X <- cbind(X, Rt)
-
+Ximp <- cbind(X, Rt); X <- cbind(X, Rt)
 XPCA <- imputePCA(X, ncp = nb2, method = "Regularized", maxiter = 1e10)$fittedX
 
 # monthly observations
 
-for (i in monthly) {
+for (i in 1:ncol(X)) {
   for (t in 1:249) {
     if (is.na(X[t, i]) == TRUE) Ximp[t, i] <- XPCA[t, i]
   }
 }
 
-Rt <- Ximp[, 167]
-X <- Ximp[, -167]
-sum(is.na(X)) # <- must be 0
+Rt <- Ximp[,ncol(Ximp)]
+X <- Ximp[,-ncol(Ximp)]
+
+# sum(is.na(X)) == 0      # Check completeness of imputation
 
 # Graph Imputation
+colnames(X) <- varnames
 
 highchart(type = "chart") %>%
-  hc_title(text = paste("Imputed Quarterly", "BDIANIATA", "Data")) %>%
+  hc_title(text = paste("Imputed Quarterly", "BDGGOVBLA", "Data")) %>%
   hc_xAxis(type = "datetime") %>%
-  hc_add_series(incon[, 40], name = "Original Observations", type = "scatter") %>%
-  hc_add_series(X[, 163], name = "Imputed Series") %>%
+  hc_add_series(incon[,"BDGGOVBLA"], name = "Original Observations", type = "scatter") %>%
+  hc_add_series(X[,'BDGGOVBLA'], name = "Imputed Series") %>%
   hc_exporting(enabled = TRUE)
 
+
 highchart(type = "chart") %>%
-  hc_title(text = paste("Imputed Quarterly", colnames(X)[152], "Data")) %>%
+  hc_title(text = paste("Imputed Quarterly", "BDPERSAVE", "Data")) %>%
   hc_xAxis(type = "datetime") %>%
-  hc_add_series(incon[, 29], name = "Original Observations", type = "scatter") %>%
-  hc_add_series(X[, 152], name = "Imputed Series") %>%
+  hc_add_series(incon[,"BDPERSAVE"], name = "Original Observations", type = "scatter") %>%
+  hc_add_series(X[,"BDPERSAVE"], name = "Imputed Series") %>%
   hc_exporting(enabled = TRUE)
 
 ##### Standardization #####
@@ -145,4 +154,4 @@ colnames(XR) <- c(varnames, "Rt")
 
 # Saving ####
 # write.csv(XR, file = "adjdata_alternative.csv")
-save(list = c("XR", "slow", "APP", "M1"), file = "A_adjdata.Rdata")
+save(list = c("XR", "slow", "APP", "M1"), file = "B_adjdata.Rdata")

@@ -3,7 +3,7 @@ source('preamble_BT.R')
 
 ##### Raw Data Import #####
 
-link = 'raw_data/Data FAVAR.xlsx'
+link <- 'raw_data/Data FAVAR.xlsx'
 
 exratesM <- zoo(
                 ts(read_excel(link, sheet = "Exchange Rates - M", 

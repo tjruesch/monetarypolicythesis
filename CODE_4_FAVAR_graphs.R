@@ -6,12 +6,11 @@ source("preamble_BT.R")
 # and run this file and then `GRAPHS_2_Rt`
 ####
 
-smooth <- TRUE
+smooth <- FALSE
 
-for (i in 1:2) {
-  run <- i
+  run <- 1
 
-  if (run == 1) load("A_FAVAR_IRFs_Rt.Rdata")
+  if (run == 1) load("B_FAVAR_IRFs_Rt.Rdata")
   if (run == 2) load("A_FAVAR_IRFs_M1.Rdata")
   if (run == 3) load("A_FAVAR_IRFs_APP.Rdata")
 
@@ -120,4 +119,4 @@ for (i in 1:2) {
                   "UNL_42p", "IMP_42p", "EXP_42p", "ToT_42p"),
                   file = "A_IRF_graphs_APP.Rdata") 
   }
-}
+

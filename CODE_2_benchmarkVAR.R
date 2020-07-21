@@ -1,12 +1,13 @@
 rm(list = ls())
 source("preamble_BT.R")
-load("A_data.Rdata")
-
+load("B_data.Rdata")
 
 # Default instrument: Rt ####
 
-Rt <- window(as.ts(na.remove(finmarketsM_adj[, 31])), start = c(1999, 7),
+Rt <- window(as.ts(na.remove(finmarketsM_adj[, 31])), start = c(1999, 6),
              end = c(2019, 3), freq = 12)
+Rt <- na.remove(diff(Rt))
+
 IP <- window(as.ts(productionM_adj[, "IPGENERAL"]), start = c(1999, 7),
              end = c(2019, 3), freq = 12)
 CPI <- window(as.ts(pricesM_adj[,"BDUUFA01F"]), start = c(1999, 7),
@@ -18,8 +19,7 @@ CPI <- (CPI - mean(CPI)) / sd(CPI)
 
 Yt <- cbind(IP, CPI, Rt)
 
-
-var.baseline <- VAR(Yt, p = 7) # change p to change the lag length
+var.baseline <- VAR(Yt, lag.max = 30, ic = "AIC", type = "const") # change p to change the lag length
 var.baseline$p
 
 amat <- matrix(c(NA, 0, 0, NA, NA, 0, NA, NA, 1), 3, 3, byrow = T)
@@ -36,39 +36,36 @@ months <- 0:48
 lower <- irf.baseline$Lower$Rt[, 1]
 upper <- irf.baseline$Upper$Rt[, 1]
 irf <- irf.baseline$irf$Rt[, 1]
-
 irf.IP <- data.frame(months, lower, irf, upper)
 
 graph.IP_print <- irf.graph.p(irf.IP, name = "Industrial Production Growth", level = "95%",
                               height = 900, width = 600)
-graph.IP <- irf.graph.d(irf.IP, name = "Industrial Production", level = "95%")
+graph.IP <- irf.graph.d(irf.IP, name = "Industrial Production Growth", level = "95%")
 
 # CPI
 lower <- irf.baseline$Lower$Rt[, 2]
 upper <- irf.baseline$Upper$Rt[, 2]
 irf <- irf.baseline$irf$Rt[, 2]
-
 irf.CPI <- data.frame(months, lower, irf, upper)
 
-
 graph.CPI_print <- irf.graph.p(irf.CPI, name = "Consumer Price Index Growth", level = "95%")
-graph.CPI <- irf.graph.d(irf.CPI, name = "Consumer Price Index", level = "95%")
+graph.CPI <- irf.graph.d(irf.CPI, name = "Consumer Price Index Growth", level = "95%")
 
 # Rt
 lower <- irf.baseline$Lower$Rt[, 3]
 upper <- irf.baseline$Upper$Rt[, 3]
 irf <- irf.baseline$irf$Rt[, 3]
-
 irf.Rt <- data.frame(months, lower, irf, upper)
-
 
 graph.Rt_print <- irf.graph.p(irf.Rt, name = "MRO Interest Rate", level = "95%")
 graph.Rt <- irf.graph.d(irf.Rt, name = "MRO Interest Rate", level = "95%")
 
-
 graph.Rt
 graph.CPI
 graph.IP
+
+
+
 
 
 # Alternative instrument: M1 ####

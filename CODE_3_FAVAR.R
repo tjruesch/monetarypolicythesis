@@ -1,22 +1,24 @@
 rm(list = ls())
 source("preamble_BT.R")
-load("A_adjdata.Rdata")
+load("B_adjdata.Rdata")
+Rt <- XR[,ncol(XR)]
+X <- XR[,-ncol(XR)]
+
 
 # This code will take some time to run.
 # I would recommend that you run the GRAPH files and only run this code if necessary
 
-for (i in 1:2) {
+
   # generally, one could also run this code for the APP policy instrument.
   # However, because the time span for this tool is relatively short, it is not suitable for a seriesous discussion.
-  run = i
+  run <- 1
 
   #### get policy instruments and data ####
 
-  Rt <- XR[, 167];Rt <- (Rt - mean(Rt)) / sd(Rt)
+  Rt <- ts(c(0, diff(Rt)), start = start(X), end = end(X), frequency = 12)
+  Rt <- (Rt - mean(Rt)) / sd(Rt)
   M1 <- window(M1, start = start(Rt), end = end(Rt)); M1 <- (M1 - mean(M1)) / sd(M1)
   APP <- (APP - mean(APP)) / sd(APP)
-
-  X <- XR[, -c(167, 168)]
 
   # Second Time Run:
   if (run == 2) Rt <- -M1
@@ -100,7 +102,7 @@ for (i in 1:2) {
   #ED(Xslow,15)
   rslow <- 4
 
-  alternative = TRUE # set to `TRUE` to run additional specifications
+  alternative = FALSE # set to `TRUE` to run additional specifications
   if (alternative){ # alternative specifications: 1:1, 2:2, 3:3 slow:fast factors
     # 1 1 ####
     Yt <- cbind(F_s1,Rt,F_f1)
@@ -241,17 +243,17 @@ for (i in 1:2) {
 
   #### 4 2 (estimated) ####
   Yt <- cbind(F_s4,Rt,F_f2)
-  p = 13
+  p = 7
   if (run == 3) p = 5
   var.42 <- VAR(Yt, p = p)
   #var.42 <- VAR(Yt, ic = "AIC", lag.max = 20)
-  #var.42$p
+  var.42$p
 
   amat <- matrix(c(NA,0,0,0,0,0,0, NA,NA,0,0,0,0,0, NA,NA,NA,0,0,0,0, NA,NA,NA,NA,0,0,0,
                    NA,NA,NA,NA,1,0,0, NA,NA,NA,NA,NA,NA,0, NA,NA,NA,NA,NA,NA,NA), 7,7, byrow = T)
   svar.42 <- SVAR(var.42, estmethod = "direct", Amat = amat)
-  irf.42 <- irf(svar.42,impulse ="Rt",n.ahead = 48, ortho = F, runs = 500, ci = 0.95)
-  irfc.42 <- irf(svar.42,impulse ="Rt",n.ahead = 48, ortho = F, cumulative = T, ci = 0.95, runs = 500)
+  irf.42 <- irf(svar.42,impulse ="Rt",n.ahead = 48, ortho = F, runs = 50, ci = 0.95)
+  irfc.42 <- irf(svar.42,impulse ="Rt",n.ahead = 48, ortho = F, cumulative = T, ci = 0.95, runs = 50)
 
   months <- 0:48
 
@@ -405,7 +407,7 @@ for (i in 1:2) {
   }
 
 
-  if (run == 1) save(list = ls(), file = "A_FAVAR_IRFs_Rt.Rdata")
+  if (run == 1) save(list = ls(), file = "B_FAVAR_IRFs_Rt.Rdata")
   if (run == 2) save(list = ls(), file = "A_FAVAR_IRFs_M1.Rdata")
   if (run == 3) save(list = ls(), file = "A_FAVAR_IRFs_APP.Rdata")
-}
+

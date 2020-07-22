@@ -1,6 +1,6 @@
 rm(list = ls())
-source("preamble_BT.R")
-load("A_data.Rdata")
+source("W_preamble_BT.R")
+load("W_data.Rdata")
 
 # Correct time Span ####
 fin <- window(as.ts(finmarketsM_adj),
@@ -52,7 +52,7 @@ rm(list = c("exrates", "exratesM_adj", "fin", "finmarketsM_adj", "inconq", "inco
 
 # nb1 <- my_estim_ncpPCA(Xslow, ncp.min = 20, ncp.max = 55, method="Regularized",
 #                        method.cv = "Kfold", nbsim = 100, pNA=.05, maxiter = 1e6)
-nb1 <- 14
+nb1 <- 25
 
 XslowPCA <- imputePCA(Xslow, ncp = nb1, method = "Regularized",
                       maxiter = 1e10)$fittedX
@@ -101,7 +101,7 @@ for (i in slowquarterly) {
 #nb2 <- estim_ncpPCA(X, ncp.min = 0, ncp.max = 30, method = "EM",
 #                    method.cv = "Kfold", nbsim = 50, pNA = 0.01)
 
-nb2 <- 14
+nb2 <- 25
 
 # replace
 for (name in colnames(Xslowimp)) {
@@ -149,9 +149,11 @@ for (i in 1:dim(X)[2]) {
 }
 X <- ts(X, start = c(1999,1), end = c(2019, 9), frequency = 12)
 Xslow <- X[, which(slow == 1)]
-XR <- cbind(X, Rt)
-colnames(XR) <- c(varnames, "Rt")
+colnames(X) <- varnames
+
+Rt <- (Rt - mean(Rt)) / sd(Rt)
+Rt <- cbind(Rt, diff(Rt))
+
 
 # Saving ####
-# write.csv(XR, file = "adjdata_alternative.csv")
-save(list = c("XR", "slow", "APP", "M1"), file = "A_adjdata.Rdata")
+save(list = c("X", "slow", "APP", "M1", "Rt"), file = "W_adjdata_25Fact.Rdata")

@@ -1,6 +1,6 @@
 rm(list = ls())
-source("preamble_BT.R")
-load("A_data.Rdata")
+source("W_preamble_BT.R")
+load("W_data.Rdata")
 
 # Correct time Span ####
 fin <- window(as.ts(finmarketsM_adj),
@@ -149,9 +149,11 @@ for (i in 1:dim(X)[2]) {
 }
 X <- ts(X, start = c(1999,1), end = c(2019, 9), frequency = 12)
 Xslow <- X[, which(slow == 1)]
-XR <- cbind(X, Rt)
-colnames(XR) <- c(varnames, "Rt")
+colnames(X) <- varnames
+
+Rt <- (Rt - mean(Rt)) / sd(Rt)
+Rt <- cbind(Rt, diff(Rt))
 
 # Saving ####
-# write.csv(XR, file = "adjdata_alternative.csv")
-save(list = c("XR", "slow", "APP", "M1"), file = "A_adjdata.Rdata")
+save(list = c("X", "slow", "APP", "M1"), file = "W_adjdata_14Fact.Rdata")
+

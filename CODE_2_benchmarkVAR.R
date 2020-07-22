@@ -1,6 +1,6 @@
 rm(list = ls())
 source("preamble_BT.R")
-load("B_data.Rdata")
+load("A_data.Rdata")
 
 # Default instrument: Rt ####
 

@@ -1,6 +1,6 @@
 rm(list = ls())
 source("preamble_BT.R")
-load("B_adjdata.Rdata")
+load("A_adjdata.Rdata")
 Rt <- XR[,ncol(XR)]
 X <- XR[,-ncol(XR)]
 
@@ -407,7 +407,7 @@ X <- XR[,-ncol(XR)]
   }
 
 
-  if (run == 1) save(list = ls(), file = "B_FAVAR_IRFs_Rt.Rdata")
+  if (run == 1) save(list = ls(), file = "A_FAVAR_IRFs_Rt.Rdata")
   if (run == 2) save(list = ls(), file = "A_FAVAR_IRFs_M1.Rdata")
   if (run == 3) save(list = ls(), file = "A_FAVAR_IRFs_APP.Rdata")
 

@@ -1,6 +1,6 @@
 rm(list = ls())
 source("preamble_BT.R")
-load("B_data.Rdata")
+load("A_data.Rdata")
 
 # Correct time Span ####
 fin <- window(as.ts(finmarketsM_adj),

@@ -10,7 +10,7 @@ smooth <- FALSE
 
   run <- 1
 
-  if (run == 1) load("B_FAVAR_IRFs_Rt.Rdata")
+  if (run == 1) load("A_FAVAR_IRFs_Rt.Rdata")
   if (run == 2) load("A_FAVAR_IRFs_M1.Rdata")
   if (run == 3) load("A_FAVAR_IRFs_APP.Rdata")
 

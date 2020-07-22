@@ -7,6 +7,7 @@ The files are divided into three classes:
   <li>Files beginning with "A" are .Rdata files that contain the raw data or data for the graphs</li>
   <li>Files beginning with "CODE" are .R files that contain replicable R-code</li>
   <li>Files beginning with "GRAPHS" are .Rmd files that can be executed to get the graphs from the thesis</li>
+  <li>Files beginning with "W" are current working files</li>
  </ul>
 
 To replicate the graphs from my paper, you have two options:

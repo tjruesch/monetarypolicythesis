@@ -22,4 +22,4 @@ I examine the methodology and economic theory behind the FAVAR approach from [Be
 
 Feel free to open an issue or send me an [email](mailto:truesch@mail.uni-mannheim.de) when you have questions or find errors in my analysis.<br/>
 You can find the submitted version of the paper [here](https://drive.google.com/open?id=1icB47gSR78lk2RCmMOmKI3nXT2zK_EMR).
-A current working paper version is available [here](https://drive.google.com/file/d/1Xy2NUWD3_4afH7hcLdh-iq7G5rVSayEO/view?usp=sharing).
+A current working paper version is available [here](https://drive.google.com/file/d/1JUmqxdxIYKadjdIwVApYGFwb077LKFxX/view?usp=sharing).
